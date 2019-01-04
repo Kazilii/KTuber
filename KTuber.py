@@ -21,23 +21,19 @@ def settings():
 		sys.exit("User opted shutdown.")
 
 	vab = input('Would you like to download a video file, audio file, or both?(video|audio|both) ')
-	print(vab)
 
 	if vab.lower() == 'audio':
 		vab = 0
-		print('VAB: {}'.format(vab))
 		download(vab)
 		return
 
 	if vab.lower() == 'video':
 		vab = 1
-		print('VAB: {}'.format(vab))
 		download(vab)
 		return
 
 	if vab.lower() == 'both':
 		vab = 2
-		print('VAB: {}'.format(vab))
 		download(vab)
 		return
 
@@ -51,14 +47,12 @@ def download(vab=0):
 		yt = YouTube(input('Input youtube link: '))
 		yt.streams.first().download('download')
 		if vab >= 1:
-			print('VAB: {}'.format(vab))
 			copyfile('download/' + str(os.listdir('download')[0]), 'media/' + str(os.listdir('download')[0]))
 	except:
 		input('Invalid youtube link, press enter to try again.')
 		download()
 
 	if vab == 1:
-		print('VAB: {}'.format(vab))
 		cleanup()
 		return
 
