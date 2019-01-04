@@ -66,6 +66,7 @@ def download(vab=0):
 
 	clip = mp.VideoFileClip('download/video.mp4')
 	clip.audio.write_audiofile('media/{0}'.format(audioname))
+	clip.close()
 	cleanup()
 
 def cleanup():
@@ -79,4 +80,5 @@ def checkfolder():
 		os.makedirs('media')
 
 checkfolder()
+cleanup()
 settings()
