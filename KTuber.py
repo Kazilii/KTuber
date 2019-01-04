@@ -13,7 +13,7 @@ def settings():
 
 	vari = 'Y'
 
-	if len(ls) > 3:
+	if len(ls) > 4:
 		vari = input('KTuber has detected that it is not being run in it\'s own folder, it is recommended to have a folder specifically for PyTuber. Do you wish to continue? (Y/n) ')
 
 	if vari.lower() == 'n'.lower():
