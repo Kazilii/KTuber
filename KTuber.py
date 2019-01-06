@@ -1,25 +1,23 @@
 from pytube import YouTube
 import os
 from shutil import copyfile
+import subprocess
 import sys
+import platform
+
+if platform.system() == 'Windows':
+	import win32com.client
+	objShell = win32com.client.Dispatch('WScript.Shell')
+	DOC = objShell.SpecialFolders('MyDocuments')
+	DOWNLOAD = DOC + '/KTuber/download'
+	MEDIA = DOC + '/KTuber/media'
+else:
+	DOWNLOAD = 'download'
+	MEDIA = 'media'
 
 vab = 0
 
 def settings():
-	ls = []
-
-	for f in os.listdir('./'):
-		ls.append(f)
-
-	vari = 'Y'
-
-	if len(ls) > 4:
-		vari = input('KTuber has detected that it is not being run in it\'s own folder, it is recommended to have a folder specifically for PyTuber. Do you wish to continue? (Y/n) ')
-
-	if vari.lower() == 'n'.lower():
-		print('Shutting down KTuber, please move the executable file into it\'s own folder and run again.')
-		sys.exit("User opted shutdown.")
-
 	vab = input('Would you like to download a video file, audio file, or both?(video|audio|both) ')
 
 	if vab.lower() == 'audio':
@@ -44,10 +42,10 @@ def settings():
 def download(vab=0):
 
 	try:
-		yt = YouTube(input('Input youtube link: '))
-		yt.streams.first().download('download')
+		yt = YouTube(input('Input youtube link: ').replace(" ", ""))
+		yt.streams.first().download(DOWNLOAD)
 		if vab >= 1:
-			copyfile('download/' + str(os.listdir('download')[0]), 'media/' + str(os.listdir('download')[0]))
+			copyfile(DOWNLOAD + '/' + str(os.listdir(DOWNLOAD)[0]), MEDIA + '/' + str(os.listdir(DOWNLOAD)[0]))
 	except:
 		input('Invalid youtube link, press enter to try again.')
 		download()
@@ -58,26 +56,40 @@ def download(vab=0):
 
 	audioname = ""
 
-	for f in os.listdir('download'):
+	for f in os.listdir(DOWNLOAD):
 		audioname = f.replace('.mp4', '.mp3')
-		os.rename('download/{0}'.format(f), 'download/video.mp4')
+		os.rename(DOWNLOAD + '/{0}'.format(f), DOWNLOAD + '/video.mp4')
 
 	import moviepy.editor as mp
 
-	clip = mp.VideoFileClip('download/video.mp4')
-	clip.audio.write_audiofile('media/{0}'.format(audioname))
+	clip = mp.VideoFileClip(DOWNLOAD + '/video.mp4')
+	clip.audio.write_audiofile(MEDIA + '/{0}'.format(audioname))
 	clip.close()
+	if platform.system() == 'Windows':
+		os.startfile(MEDIA)
+	if platform.system() == 'Linux':
+		subprocess.Popen(['xdg-open', MEDIA])
+
 	cleanup()
 
 def cleanup():
-	for f in os.listdir('download'):
-		os.remove('download/{0}'.format(f))
+
+	for f in os.listdir(DOWNLOAD):
+		os.remove(DOWNLOAD + '/{0}'.format(f))
 
 def checkfolder():
-	if not os.path.exists('download'):
-		os.makedirs('download')
-	if not os.path.exists('media'):
-		os.makedirs('media')
+	if not platform.system() == 'Windows':
+		if not os.path.exists('download'):
+			os.makedirs('download')
+		if not os.path.exists('media'):
+			os.makedirs('media')
+	else:
+		if not os.path.exists(DOC + '/KTuber'):
+			os.makedirs(DOC + '/KTuber')
+		if not os.path.exists(DOC + '/KTuber/download'):
+			os.makedirs(DOC + '/KTuber/download')
+		if not os.path.exists(DOC + '/KTuber/media'):
+			os.makedirs(DOC + '/KTuber/media')
 
 checkfolder()
 cleanup()
