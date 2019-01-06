@@ -6,6 +6,7 @@ Simple easy to use terminal based youtube downloader, allows to choose between d
 
 # Instructions
 - **Windows**
+    - [VCRuntime Required](https://www.microsoft.com/en-us/download/details.aspx?id=5555)
     - Install Python 3 or higher
     - Place KTuber.py and requirements.txt in a folder
     - Open that folder in Command Prompt
